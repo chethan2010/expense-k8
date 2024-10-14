@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Deployment
 metadata:
   name: mysql
+  namespace: expense
   #this labels are related to dployment
   labels:
     component: mysql
@@ -14,7 +15,7 @@ metadata:
         component: mysql
         project: Expense
         tier: database
-    templet:
+    templet: 
       metadate:
         lables:
           component: mysql
@@ -28,13 +29,13 @@ metadata:
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx
+  name: mysql
+  namespace: expense
 spec:
-  labels:
-    name: db
-    project: expense
-    componet: db
-    environment: dev
+  selector:
+     component: mysql
+     project: Expense
+     tier: database
 ports:
 - protocol: TCP
   port: 3306 #load balancer
