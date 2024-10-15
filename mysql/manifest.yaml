@@ -15,7 +15,16 @@ spec:
       component: mysql
       project: expense
       tier: database
- 
+   template: 
+    metadate:
+      lables:
+        component: mysql
+        project: expense
+        tier: database
+    spec: 
+      containers:
+      - name: mysql
+        image: joindevops/mysql:v1.0 
 
 
     
