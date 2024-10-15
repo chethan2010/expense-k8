@@ -9,13 +9,13 @@ metadata:
     project: expense
     tier: database
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       component: mysql
       project: expense
       tier: database
-   template: 
+  template: 
     metadate:
       lables:
         component: mysql
