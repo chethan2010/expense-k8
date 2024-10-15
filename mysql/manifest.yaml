@@ -36,10 +36,10 @@ spec:
      component: mysql
      project: expense
      tier: database
-ports:
-- protocol: TCP
-  port: 3306 #load balancer
-  targetPort: 3306 #target port
+  ports:
+  - protocol: TCP
+    port: 3306 #load balancer
+    targetPort: 3306 #target port
   
 
     
