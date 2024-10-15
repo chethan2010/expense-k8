@@ -6,20 +6,20 @@ metadata:
   #this labels are related to dployment
   labels:
     component: mysql
-    project: Expense
+    project: expense
     tier: database
   spec:
     replicas: 3
     selector:
       matchLabels:
         component: mysql
-        project: Expense
+        project: expense
         tier: database
-    templet: 
+    template: 
       metadate:
         lables:
           component: mysql
-          project: Expense
+          project: expense
           tier: database
       spec: 
         containers:
