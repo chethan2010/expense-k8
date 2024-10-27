@@ -23,7 +23,7 @@ metadata:
         component: backend
         project: expense
         tier: app
-    templet:
+    template:
       metadate:
         labels:
           component: mysql
