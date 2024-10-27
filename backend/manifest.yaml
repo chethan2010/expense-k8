@@ -50,7 +50,7 @@ spec:
   ports:
   - protocol: TCP
     port: 8080 #load balancer
-    targetport: 8080 #target port
+    targetPort: 8080 #target port
     
     
 
