@@ -5,36 +5,20 @@ metadata:
   namespace: expense
 data:
   nginx.conf: |
-    user www-data;
     worker_processes 4;
-    pid /var/run/nginx.pid;
 
     events {
       worker_connections 768;
     }
 
     http {
-      sendfile on;
-      tcp_nopush on;
-      tcp_nodelay on;
-      keepalive_timeout 65;
-      types_hash_max_size 2048;
-      large_client_header_buffers 6 32k;
-      client_max_body_size 100m;
-
-      access_log /var/log/nginx/access.log;
-      error_log /var/log/nginx/error.log warn;
-
-      gzip on;
-      gzip_disable "msie6";
-
       server {
         listen 8080;
         server_name localhost;
 
         location / {
-            root /usr/share/nginx/html;
-            index index.html index.htm;
+          root /usr/share/nginx/html;
+          index index.html index.htm;
         }
 
         location /images/ {
@@ -48,9 +32,10 @@ data:
             root /usr/share/nginx/html;
         }
 
-        location /api/ { 
-            proxy_pass http://backend:8080/; # Ensure backend service is accessible
-        }
+        # Temporarily commenting out API call for troubleshooting
+        # location /api/ { 
+        #     proxy_pass http://backend:8080/; 
+        # }
       }
     }
 ---
@@ -59,7 +44,6 @@ apiVersion: apps/v1
 metadata:
   name: frontend
   namespace: expense
-  # these labels are deployment related labels
   labels:
     component: frontend
     project: expense
@@ -71,7 +55,6 @@ spec:
       component: frontend
       project: expense
       tier: web
-  # pod definition
   template:
     metadata:
       labels:
@@ -87,9 +70,6 @@ spec:
           mountPath: /etc/nginx/nginx.conf
           subPath: nginx.conf
           readOnly: true
-        # envFrom:
-        # - configMapRef:
-        #     name: frontend
       volumes:
       - name: nginx-conf
         configMap:
@@ -97,7 +77,6 @@ spec:
           items:
           - key: nginx.conf
             path: nginx.conf
-
 ---
 apiVersion: v1
 kind: Service
@@ -112,5 +91,5 @@ spec:
     tier: web
   ports:
   - protocol: TCP
-    port: 80 #service-port
-    targetPort: 8080 #target-port
+    port: 80 # service-port
+    targetPort: 8080 # target-port
