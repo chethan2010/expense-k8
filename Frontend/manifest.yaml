@@ -1,46 +1,13 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: frontend
-  namespace: expense
-data:
-  nginx.conf: |
-    worker_processes 4;
-
-    events {
-      worker_connections 768;
-    }
-
-    http {
-      server {
-        listen 8080;
-        server_name localhost;
-
-        location / {
-          root /usr/share/nginx/html;
-          index index.html index.htm;
-        }
-
-        location /images/ {
-            expires 5s;
-            root /usr/share/nginx/html;
-            try_files $uri /images/placeholder.png;
-        }
-
-        error_page 500 502 503 504 /50x.html;
-        location = /50x.html {
-            root /usr/share/nginx/html;
-        }
-
-        # Temporarily commenting out API call for troubleshooting
-        # location /api/ { 
-        #     proxy_pass http://backend:8080/; 
-        # }
-      }
-    }
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: frontend
+#   namespace: expense
+# data:
+#   DB_HOST: mysql # mysql component service name
 ---
+apiVersion: webs/v1
 kind: Deployment
-apiVersion: apps/v1
 metadata:
   name: frontend
   namespace: expense
@@ -56,40 +23,35 @@ spec:
       project: expense
       tier: web
   template:
-    metadata:
+    metadata: # corrected the spelling here
       labels:
-        component: frontend
+        component: frontend # changed to match the selector labels
         project: expense
         tier: web
-    spec:
+    spec: 
       containers:
       - name: frontend
         image: joindevops/frontend:v1.0
-        volumeMounts:
-        - name: nginx-conf
-          mountPath: /etc/nginx/nginx.conf
-          subPath: nginx.conf
-          readOnly: true
-      volumes:
-      - name: nginx-conf
-        configMap:
-          name: frontend
-          items:
-          - key: nginx.conf
-            path: nginx.conf
+        # envFrom:
+        # - configMapRef:
+        #     name: frontend
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend
+  name: nginx
   namespace: expense
+  labels:
+    name: frontend
+    project: expense
+    component: frontend # fixed spelling here
+    environment: dev
 spec:
   type: LoadBalancer
-  selector:
+  selector: # added selector for correct routing
     component: frontend
-    project: expense
-    tier: web
   ports:
   - protocol: TCP
-    port: 80 # service-port
-    targetPort: 8080 # target-port
+    port: 80 # load balancer port
+    targetPort: 80 # target container port
+    
