@@ -6,5 +6,5 @@ metadata:
 spec:
   containers:
   - name: debug
-    image: chetan21dockerhub/debug:v1.0
+    image: chetan21dockerhub/debug:v1.0 
  
